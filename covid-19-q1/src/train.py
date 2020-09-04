@@ -6,10 +6,10 @@ import datetime
 import gc
 
 
-goldstandard=pd.read_csv('./data/goldstandard.csv')
+goldstandard=pd.read_csv('/data/goldstandard.csv')
 
 
-person=pd.read_csv('./data/person.csv')
+person=pd.read_csv('/data/person.csv')
 #person['race']=person['race_concept_id'].apply(lambda x: 'White' if x==8527 else ('Asian' if x==8515 else ('Black or African American' if x==8516 else 'Unknown')))
 person['race']=person['race_concept_id'].apply(lambda x: 1 if x==8527 else (2 if x==8515 else (3 if x==8516 else 0)))
 #person['ethnicity']=person['ethnicity_concept_id'].apply(lambda x: 'Not Hispanic or Latino' if x==38003564 else 'Hispanic or Latino')
@@ -24,7 +24,7 @@ gc.collect()
 
 
 
-visit_occurrence=pd.read_csv('./data/visit_occurrence.csv')
+visit_occurrence=pd.read_csv('/data/visit_occurrence.csv')
 visit_feature=pd.DataFrame(visit_occurrence['person_id'].value_counts()).reset_index().rename(columns={'person_id':'visit times','index':'person_id'})
 visit_feature=pd.merge(pd.DataFrame(person_feature.index),visit_feature,how='outer',on='person_id')
 visit_feature=visit_feature.fillna(0)
@@ -32,7 +32,7 @@ visit_feature=visit_feature.set_index('person_id',drop=True)
 del visit_occurrence
 gc.collect()
 
-condition_occurrence=pd.read_csv('./data/condition_occurrence.csv')
+condition_occurrence=pd.read_csv('/data/condition_occurrence.csv')
 #condition_occurrence=pd.merge(condition_occurrence, goldstandard, on='person_id', how='outer')
 #condition_dict=data_dict[data_dict['table']=='condition_occurrence'][['concept_id','concept_name']]
 #condition_dict=condition_dict.rename(columns={'concept_id':'condition_concept_id'})
@@ -57,7 +57,7 @@ gc.collect()
 
 
 
-measurement=pd.read_csv('./data/measurement.csv')
+measurement=pd.read_csv('/data/measurement.csv')
 #measure_dict=data_dict[data_dict['table']=='measurement'][['concept_id','concept_name']]
 #measure_dict=measure_dict.rename(columns={'concept_id':'measurement_concept_id'})
 #measurement=pd.merge(measurement,measure_dict,on='measurement_concept_id',how='outer')
@@ -147,7 +147,7 @@ device_feature[device_feature>0]=1
 del device_exposure
 gc.collect()
 
-observation=pd.read_csv('./data/observation.csv')
+observation=pd.read_csv('/data/observation.csv')
 #observation_dict=data_dict[data_dict['table']=='observation'][['concept_id','concept_name']]
 #observation_dict=observation_dict.rename(columns={'concept_id':'observation_concept_id'})
 #observation=pd.merge(observation,observation_dict,on='observation_concept_id',how='outer')
@@ -168,7 +168,7 @@ gc.collect()
 
 
 
-drug_exposure=pd.read_csv('./data/drug_exposure.csv')
+drug_exposure=pd.read_csv('/data/drug_exposure.csv')
 #drug_dict=data_dict[data_dict['table']=='drug_exposure'][['concept_id','concept_name']]
 #drug_dict=drug_dict.rename(columns={'concept_id':'drug_concept_id'})
 #drug_exposure=pd.merge(drug_exposure,drug_dict,on='drug_concept_id',how='outer')
@@ -281,7 +281,7 @@ X_new.shape
 fea=fea_new.iloc[:,indices[0:200]]
 fea=fea.join(person_feature[['age','race','ethnicity','gender']])
 
-fea.to_csv('./scratch/train_features.csv')
+fea.to_csv('/scratch/train_features.csv')
 
 def cross_validate_lightgbm(train_data, train_output,  
                             n_folds, param_grid,  
@@ -512,5 +512,5 @@ results_dict, best_settings, final_model_uncalibrated, keep_dict=cross_validate_
                             metric_func_dict = {'auc': sklearn.metrics.roc_auc_score},  
                             other_metrics_dict = None, keep_data = True, num_boost_round=100,early_stopping_rounds=20)
 
-final_model_uncalibrated.save_model('./model/lightgbm.txt')
+final_model_uncalibrated.save_model('/model/lightgbm.txt')
 print("Training stage finished", flush = True)

@@ -13,7 +13,7 @@ import gc
 
 
 
-person=pd.read_csv('./data/person.csv')
+person=pd.read_csv('/data/person.csv')
 #person['race']=person['race_concept_id'].apply(lambda x: 'White' if x==8527 else ('Asian' if x==8515 else ('Black or African American' if x==8516 else 'Unknown')))
 person['race']=person['race_concept_id'].apply(lambda x: 1 if x==8527 else (2 if x==8515 else (3 if x==8516 else 0)))
 #person['ethnicity']=person['ethnicity_concept_id'].apply(lambda x: 'Not Hispanic or Latino' if x==38003564 else 'Hispanic or Latino')
@@ -28,7 +28,7 @@ gc.collect()
 
 
 
-visit_occurrence=pd.read_csv('./data/visit_occurrence.csv')
+visit_occurrence=pd.read_csv('/data/visit_occurrence.csv')
 visit_feature=pd.DataFrame(visit_occurrence['person_id'].value_counts()).reset_index().rename(columns={'person_id':'visit times','index':'person_id'})
 visit_feature=pd.merge(pd.DataFrame(person_feature.index),visit_feature,how='outer',on='person_id')
 visit_feature=visit_feature.fillna(0)
@@ -36,7 +36,7 @@ visit_feature=visit_feature.set_index('person_id',drop=True)
 del visit_occurrence
 gc.collect()
 
-condition_occurrence=pd.read_csv('./data/condition_occurrence.csv')
+condition_occurrence=pd.read_csv('/data/condition_occurrence.csv')
 #condition_occurrence=pd.merge(condition_occurrence, goldstandard, on='person_id', how='outer')
 #condition_dict=data_dict[data_dict['table']=='condition_occurrence'][['concept_id','concept_name']]
 #condition_dict=condition_dict.rename(columns={'concept_id':'condition_concept_id'})
@@ -61,7 +61,7 @@ gc.collect()
 
 
 
-measurement=pd.read_csv('./data/measurement.csv')
+measurement=pd.read_csv('/data/measurement.csv')
 #measure_dict=data_dict[data_dict['table']=='measurement'][['concept_id','concept_name']]
 #measure_dict=measure_dict.rename(columns={'concept_id':'measurement_concept_id'})
 #measurement=pd.merge(measurement,measure_dict,on='measurement_concept_id',how='outer')
@@ -139,7 +139,7 @@ p_f=np.array(procedure_feature)
 p_f_new=sel.fit_transform(p_f[0:,1:])
 """
 
-device_exposure=pd.read_csv('./data/device_exposure.csv')
+device_exposure=pd.read_csv('/data/device_exposure.csv')
 #device_exposure['concept']=device_exposure['device_concept_id'].apply(lambda x: 'Ventilator' if x==45768197 else '')
 
 
@@ -151,7 +151,7 @@ device_feature[device_feature>0]=1
 del device_exposure
 gc.collect()
 
-observation=pd.read_csv('./data/observation.csv')
+observation=pd.read_csv('/data/observation.csv')
 #observation_dict=data_dict[data_dict['table']=='observation'][['concept_id','concept_name']]
 #observation_dict=observation_dict.rename(columns={'concept_id':'observation_concept_id'})
 #observation=pd.merge(observation,observation_dict,on='observation_concept_id',how='outer')
@@ -172,7 +172,7 @@ gc.collect()
 
 
 
-drug_exposure=pd.read_csv('./data/drug_exposure.csv')
+drug_exposure=pd.read_csv('/data/drug_exposure.csv')
 #drug_dict=data_dict[data_dict['table']=='drug_exposure'][['concept_id','concept_name']]
 #drug_dict=drug_dict.rename(columns={'concept_id':'drug_concept_id'})
 #drug_exposure=pd.merge(drug_exposure,drug_dict,on='drug_concept_id',how='outer')
@@ -192,7 +192,7 @@ gc.collect()
 feature=person_feature.join(visit_feature).join(condition_feature).join(measurement_feature).join(device_feature).join(observation_feature).join(drug_feature)
 
 
-train_data=pd.read_csv('./scratch/train_features.csv')
+train_data=pd.read_csv('/scratch/train_features.csv')
 train_col=train_data.columns
 feature_col=feature.columns
 diff_in_train=list(set(train_col).difference(set(feature_col)))
@@ -204,4 +204,4 @@ final_model = lgb.Booster(model_file='./model/lightgbm.txt')
 predict=final_model.predict(test_data)
 predict=pd.DataFrame(person_feature.index).join(pd.DataFrame(predict))
 predict.columns=['person_id','score']
-predict.to_csv('./output/predictions.csv')
+predict.to_csv('/output/predictions.csv')
