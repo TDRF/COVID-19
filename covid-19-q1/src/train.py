@@ -135,7 +135,7 @@ p_f=np.array(procedure_feature)
 p_f_new=sel.fit_transform(p_f[0:,1:])
 """
 
-device_exposure=pd.read_csv('./data/device_exposure.csv')
+device_exposure=pd.read_csv('/data/device_exposure.csv')
 #device_exposure['concept']=device_exposure['device_concept_id'].apply(lambda x: 'Ventilator' if x==45768197 else '')
 
 
