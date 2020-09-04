@@ -21,8 +21,7 @@ RUN pip install pandas \
   lightgbm \
   sklearn \
   datetime \
-  numpy \
-  gc
+  numpy 
 
 # Move to the app folder
 RUN mkdir /app
